@@ -117,7 +117,20 @@ module.exports.updateCourse = async (req, res) => {
   }
 };
 module.exports.getCourse = async (req, res) => {
-  res.json({
-    message: "courseBulk endpoint",
-  });
+  try {
+    const adminId = req.adminId;
+
+    const courses = await Course.find({
+      creatorId: adminId,
+    });
+    res.json({
+      message: "courseBulk endpoint",
+      courses: courses,
+    });
+  } catch (err) {
+    console.log("Error in addCourse controller :", err.message);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
