@@ -1,12 +1,70 @@
+const Admin = require("../models/admin.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 module.exports.signup = async (req, res) => {
-  res.json({
-    message: "signup endpoint",
-  });
+  try {
+    const { email, password, firstName, lastName } = req.body;
+
+    console.log(email, password, firstName, lastName);
+    const admin = await Admin.findOne({ email: email });
+    if (admin) {
+      res.status(400).json({
+        message: "Email already exist",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdAdmin = await Admin.create({
+      email: email,
+      password: hashedPassword,
+      firstName: firstName,
+      lastName: lastName,
+    });
+    res.json({
+      admin: createdAdmin,
+      message: "Admin is SignedIn",
+    });
+  } catch (err) {
+    console.log("Error in signup Controller", err.message);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
 module.exports.signin = async (req, res) => {
-  res.json({
-    message: "signin endpoint",
-  });
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email: email });
+    if (!admin) {
+      return res.status(400).json({
+        message: "Email is not present in Database",
+      });
+    }
+    const isMatched = await bcrypt.compare(password, admin.password);
+    // console.log("isMatched", isMatched);
+    if (!isMatched) {
+      res.json({
+        message: "Incorrect email/password",
+      });
+    }
+    const token = jwt.sign(
+      {
+        id: admin._id,
+      },
+      process.env.JWT_ADMIN_SECRET
+    );
+    //cookie logic here
+
+    res.json({
+      message: "Admin is signedIn",
+      token: token,
+    });
+  } catch (err) {
+    console.log("Error in signin Controller", err.message);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
 module.exports.addCourse = async (req, res) => {
   res.json({
