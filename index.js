@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use("api/v1/user", require("./routes/user.routes"));
 app.use("api/v1/courses", require("./routes/courses.routes"));
-app.use("api/v1/courses", require("./routes/admin.routes"));
+app.use("api/v1/admin", require("./routes/admin.routes"));
 app.get("/", (req, res) => {
   res.json({
     message: "We are in the server",

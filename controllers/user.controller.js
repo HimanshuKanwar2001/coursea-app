@@ -3,12 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.signup = async (req, res) => {
-  //   const { name, email, password } = req.body;
-
+  
   try {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { name, email, password } = req.body; 
+   
     console.log(name, email, password);
     const user = await User.findOne({ email: email });
     if (user) {

@@ -1,4 +1,4 @@
-module.exports.getAllCourses = async (req, res) => {
+module.exports.preview = async (req, res) => {
   try {
     res.json({
       message: "get All Courses",
