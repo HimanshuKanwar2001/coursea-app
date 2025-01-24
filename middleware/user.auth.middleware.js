@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 dotenv.config();
 
-module.exports.auth = (req, res, next) => {
+module.exports.userAuth = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
@@ -16,7 +16,7 @@ module.exports.auth = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded._id; // Add user ID to request object
+    req.userId = decoded.id; // Add user ID to request object
     next(); // Pass control to the next middleware or route
   } catch (err) {
     console.error("Error in Auth middleware:", err.message);

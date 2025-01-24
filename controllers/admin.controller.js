@@ -1,4 +1,5 @@
 const Admin = require("../models/admin.model");
+const Course = require("../models/course.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -67,9 +68,26 @@ module.exports.signin = async (req, res) => {
   }
 };
 module.exports.addCourse = async (req, res) => {
-  res.json({
-    message: "addCourse endpoint",
-  });
+  try {
+    const adminId = req.adminId;
+    const { title, description, price, imageUrl, creatorId } = req.body;
+    const courseCreated = await Course({
+      title,
+      description,
+      price,
+      imageUrl,
+      creatorId: adminId,
+    });
+    res.json({
+      message: "addCourse endpoint",
+      courseId: courseCreated._id,
+    });
+  } catch (err) {
+    console.log("Error in addCourse controller :", err.message);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
 module.exports.updateCourse = async (req, res) => {
   res.json({
