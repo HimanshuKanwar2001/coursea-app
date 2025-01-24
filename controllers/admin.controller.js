@@ -90,9 +90,31 @@ module.exports.addCourse = async (req, res) => {
   }
 };
 module.exports.updateCourse = async (req, res) => {
-  res.json({
-    message: "updateCourse endpoint",
-  });
+  try {
+    const adminId = req.adminId;
+    const { title, description, imageUrl, price, courseId } = req.body;
+    const updateCourse = await Course.updateOne(
+      {
+        _id: courseId,
+        creatorId: adminId,
+      },
+      {
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        price: price,
+      }
+    );
+    res.json({
+      message: "course Updated",
+      courseId: updateCourse._id,
+    });
+  } catch (err) {
+    console.log("Error in addCourse controller :", err.message);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
 module.exports.getCourse = async (req, res) => {
   res.json({
