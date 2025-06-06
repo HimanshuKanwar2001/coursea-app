@@ -1,6 +1,10 @@
+const Course = require("../models/course.model");
+
 module.exports.preview = async (req, res) => {
   try {
+    const courses = await Course.find();
     res.json({
+      courses,
       message: "get All Courses",
     });
   } catch (err) {
@@ -12,8 +16,10 @@ module.exports.preview = async (req, res) => {
 };
 
 module.exports.purchase = async (req, res) => {
+  const courses=await Course.find();
   try {
     res.json({
+      courses:courses
       message: "User is in course purchase controller",
     });
   } catch (err) {

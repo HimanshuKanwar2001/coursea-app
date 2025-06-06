@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { z } = require("zod");
+const Purchase = require("../models/purchase.model");
 
 module.exports.signup = async (req, res) => {
   // const requiredBody = z.object({
@@ -84,7 +85,8 @@ module.exports.signin = async (req, res) => {
 };
 
 module.exports.getAllUsers = async (req, res) => {
-  const users = await User.find();
+  const userId=req.userId;
+  const users = await Purch .find(userId);
   res.json({
     message: "Get All Users",
     users: users,
@@ -92,7 +94,22 @@ module.exports.getAllUsers = async (req, res) => {
 };
 
 module.exports.userPurchases = async (req, res) => {
+  const userId = req.userId;
+  const courseId = req.body.courseId;
+
   try {
+    const isPurchased = await Purchase.findOne({ userId, courseId });
+
+    if (isPurchased) {
+      return res
+        .status(200)
+        .json({ message: "User has already purchased the product" });
+    }
+
+    await Purchase.create({
+      userId,
+      courseId,
+    });
     res.status(200).json({
       message: "userPurchases controller",
     });
